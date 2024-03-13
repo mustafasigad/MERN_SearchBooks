@@ -48,13 +48,13 @@ const resolvers = {
 
    
     // saveBook 
-    saveBook: async (parent, { bookId }, context) => {
+    saveBook: async (parent, { input }, context) => {
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           context.user._id,
-          { $addToSet: { savedBooks: bookId } },
+          { $addToSet: { savedBooks: input} },
           { new: true }
-        ).populate('savedBooks');
+        );
         return updatedUser;
       }
       throw new AuthenticationError('User not logged in');
@@ -68,9 +68,9 @@ const resolvers = {
         const updatedUser = await User.findByIdAndUpdate(
    // filter criteria to remove the book 
           context.user._id,
-          { $pull: { savedBooks: bookId } },
+          { $pull: { savedBooks: {bookId} } },
           { new: true }
-        ).populate('savedBooks');
+        );
         return updatedUser;
       }
       throw new AuthenticationError('Not logged in');
